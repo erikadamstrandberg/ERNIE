@@ -9,9 +9,9 @@ def jacobi_symbol(a,b):
         return 1
     else:
         if a % 2 ==0:
-            return jacobi_symbol(a/2,b) * (-1)**((b**2 -1)/8)
+            return jacobi_symbol(a/2,b) * (-1)**((b**2 -1)//8)
         else:
-            return jacobi_symbol(b % a, a) * (-1)**((a-1)*(b-1)/4)
+            return jacobi_symbol(b % a, a) * (-1)**((a-1)*(b-1)//4)
 
 def generate_prime_candidate(n_size):
     n = random.getrandbits(n_size)
@@ -32,7 +32,7 @@ def generate_prime(n_size):
     success = True
     for i in range(10):
         a = random.randrange(1,b)
-        if gcd(a, b) == 1 and jacobi_symbol(a, b) == a**((b-1)/2) % b:
+        if gcd(a, b) == 1 and jacobi_symbol(a, b) == a**((b-1)//2) % b:
             continue
         else:
             success = False
