@@ -1,5 +1,9 @@
+## Python imports 
 import numpy as numpy
 import argparse
+
+## Helper functions
+import generate
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser('rsa encrypt')
@@ -9,7 +13,10 @@ if __name__=="__main__":
 
     if args.rsa_key:
         # generate a rsa key (public private pair)
-        print("No argument needed!")
+        pair = generate.RsaKeyPair()
+        print(pair.p)
+        print(pair.q)
+        print(pair.d)
 
     if args.encrypt:
         new_parser = argparse.ArgumentParser('encryption set up')
