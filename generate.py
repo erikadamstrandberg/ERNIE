@@ -22,12 +22,19 @@ def gcd(a,b):
             b = b - a
     return a
 
-def generate_prime(n_size):
-    b = generate_prime_candidate(n_size)
-    #print(b)
-    success = True
-    for i in range(100):
+def random_number_not_zero(b):
+    a = random.randrange(b)
+    while a == 0:
         a = random.randrange(b)
+    return a
+        
+
+def generate_prime(n_size):
+    b = 13##generate_prime_candidate(n_size)
+    success = True
+    for i in range(3):
+        a = random_number_not_zero(b)
+
         if gcd(a, b) == 1 and jacobi_symbol(a, b) == a*(b-1)/2 % b:
             continue
         else:
@@ -46,7 +53,5 @@ class RsaKeyPair():
         self.e = 1
         self.n_size = n_size
     
-
-
             
         
