@@ -13,5 +13,11 @@ def jacobi_symbol(a,b):
 def generate_prime_candidate(n_size):
     return random.getrandbits(n_size)
 
-
+def gcd(a,b):
+    while not a == b :
+        if a > b :
+            a = a - b
+        else :
+            b = b - a
+    return a
 

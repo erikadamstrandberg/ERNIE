@@ -1,7 +1,6 @@
 import numpy as numpy
 import argparse
 
-
 if __name__=="__main__":
     parser = argparse.ArgumentParser('rsa encrypt')
     parser.add_argument("--rsa_key", required=False, action='store_true', help="generate new key pair")
