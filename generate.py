@@ -4,7 +4,6 @@ import sys
 sys.setrecursionlimit(100000)
 
 def jacobi_symbol(a,b):
-    a, b = int(a), int(b)
     if a == 1:
         return 1
     else:
