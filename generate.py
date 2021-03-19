@@ -26,7 +26,7 @@ def gcd(a,b):
             b = b - a
     return a 
         
-def generat e_prime(n_size,n_iter):
+def generate_prime(n_size,n_iter):
     b = generate_prime_candidate(n_size)
     success = True
     for i in range(n_iter):
@@ -47,22 +47,58 @@ def d_is_coprime(d, p, q):
     else:
         return False
     
-def generate_d(p,q,n_iter):
+def generate_d_e(p,q,d_start):
     d = np.maximum(p,q) + 1
-    found_d = False 
-    while not found_d:
+    d_is_found = False 
+    
+    d = d_start
+    while not d_is_found:
         d += 1
-        found_d = d_is_coprime(d, p, q, n_iter)
-    return d
+        d_is_found = d_is_coprime(d, p, q)
 
-def generate_e(p,q,d):
-    n = p*q
+    x0 = (p-1)*(q-1)
+    x1 = d
+
+    r0 = d
+    r1 = x0
+
+    s0 = 1
+    s1 = 0
+
+    t0 = 0
+    t1 = 1
+
+    while not x0 == 1:
+        x_temp = x1
+        x1 = x0%x1
+        x0 = x_temp
+         
+        quotient = r0//r1
+
+        r_temp = r1
+        r1 = r0 - quotient*r1
+        r0 = r_temp
+        
+        s_temp = s1
+        s1 = s0 - quotient*s1
+        s0 = s_temp
+        
+        t_temp = t1
+        t1 = t0 - quotient*t1
+        t0 = t_temp
+
+    e = s1
+    if e < np.log2(p*q):
+        (e,d) = generate_d_e(p,q,d)
+
+
+    return (d,e)
     
 class RsaKeyPair():
     def __init__(self,n_size=100,n_iter=10):
         self.p = generate_prime(7,n_iter)
         self.q = generate_prime(7,n_iter)
-        self.d = generate_d(self.p,self.q)
-        self.e = 1
+        (self.d,self.e) = generate_d_e(self.p,self.q,0)
         self.n_size = n_size
+
 

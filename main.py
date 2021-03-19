@@ -17,6 +17,7 @@ if __name__=="__main__":
         print(pair.p)
         print(pair.q)
         print(pair.d)
+        print(pair.e)
 
     if args.encrypt:
         new_parser = argparse.ArgumentParser('encryption set up')
