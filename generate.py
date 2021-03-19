@@ -3,29 +3,11 @@ import random
 import sys
 sys.setrecursionlimit(10**6)
 
-def jacobi_symbol(a,b):
-    if a == 1:
-        return 1
-    else:
-        if a % 2 == 0:
-            return jacobi_symbol(a/2,b) * (-1)**((b**2 -1)//8)
-        else:
-            return jacobi_symbol(b % a, a) * (-1)**((a-1)*(b-1)//4)
-
-def generate_prime_candidate(n_size):
-    n = random.getrandbits(n_size)
-    while n < 3:
-        n = random.getrandbits(n_size)
-    return n 
-
-def gcd(a,b):
-    while not a == b:
-        if a > b:
-            a = a - b
-        else:
-            b = b - a
-    return a 
-        
+# Generates a prime number with the bitsize n_size.
+# Tries to check if the number actually is prime n_iter times.
+# If b is a composite number each check has a probability to
+# find it with 50% for each check, thus the probablity of 
+# b being prime is 2**(n_iter)
 def generate_prime(n_size,n_iter):
     b = generate_prime_candidate(n_size)
     success = True
@@ -41,21 +23,46 @@ def generate_prime(n_size,n_iter):
     else:
         return generate_prime(n_size, n_iter)
 
-def d_is_coprime(d, p, q):
-    if gcd(d, (p-1)*(q-1)) == 1:
-        return True
+# Generates a random number with the bitsize n_size
+def generate_prime_candidate(n_size):
+    n = random.getrandbits(n_size)
+    while n < 3:
+        n = random.getrandbits(n_size)
+    return n 
+
+# Testing if candidate is a prime number
+def jacobi_symbol(a,b):
+    if a == 1:
+        return 1
     else:
-        return False
-    
+        if a % 2 == 0:
+            return jacobi_symbol(a/2,b) * (-1)**((b**2 -1)//8)
+        else:
+            return jacobi_symbol(b % a, a) * (-1)**((a-1)*(b-1)//4)
+
+
+# Find greatest common divisor (GCD) of a and b
+def gcd(a,b):
+    while not a == b:
+        if a > b:
+            a = a - b
+        else:
+            b = b - a
+    return a 
+             
+# Generate d as relative prime to (p-1)*(q-1)
+# Then find e from the extended euclidean algorithm
 def generate_d_e(p,q,d_start):
-    d = np.maximum(p,q) + 1
+    d = np.maximum(p,q) + d_start
     d_is_found = False 
-    
-    d = d_start
+
+    # Just iterate until a relativly prime d is found
     while not d_is_found:
         d += 1
-        d_is_found = d_is_coprime(d, p, q)
+        d_is_found = d_rel_prime(d, p, q)
 
+    # Extended Euclidean algorithm with the 
+    # variables from wikipedia article
     x0 = (p-1)*(q-1)
     x1 = d
 
@@ -64,9 +71,6 @@ def generate_d_e(p,q,d_start):
 
     s0 = 1
     s1 = 0
-
-    t0 = 0
-    t1 = 1
 
     while not x0 == 1:
         x_temp = x1
@@ -83,22 +87,29 @@ def generate_d_e(p,q,d_start):
         s1 = s0 - quotient*s1
         s0 = s_temp
         
-        t_temp = t1
-        t1 = t0 - quotient*t1
-        t0 = t_temp
-
     e = s1
+
+    # If e < log2(p*q) we choose a new d and 
+    # repeat the process! 
+    # NOTE More recursion might been stupid?
     if e < np.log2(p*q):
         (e,d) = generate_d_e(p,q,d)
 
-
     return (d,e)
     
-class RsaKeyPair():
-    def __init__(self,n_size=100,n_iter=10):
-        self.p = generate_prime(7,n_iter)
-        self.q = generate_prime(7,n_iter)
-        (self.d,self.e) = generate_d_e(self.p,self.q,0)
-        self.n_size = n_size
+# NOTE I am unsure here! Must d be a prime as well?
+# If that is the case please implement jacobi here as well!
+def d_rel_prime(d, p, q):
+    if gcd(d, (p-1)*(q-1)) == 1:
+        return True
+    else:
+        return False
 
+# Constructor!
+class RsaKeyPair():
+    def __init__(self,n_size=10,n_iter=10):
+        self.p = generate_prime(n_size,n_iter)
+        self.q = generate_prime(n_size,n_iter)
+        (self.d,self.e) = generate_d_e(self.p,self.q,1)
+        self.n_size = n_size
 

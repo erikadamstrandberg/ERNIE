@@ -14,10 +14,11 @@ if __name__=="__main__":
     if args.rsa_key:
         # generate a rsa key (public private pair)
         pair = generate.RsaKeyPair()
-        print(pair.p)
-        print(pair.q)
-        print(pair.d)
-        print(pair.e)
+        p = pair.p
+        q = pair.q
+        d = pair.d
+        e = pair.e
+        
 
     if args.encrypt:
         new_parser = argparse.ArgumentParser('encryption set up')
