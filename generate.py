@@ -12,7 +12,9 @@ def generate_prime(n_size,n_iter):
     b = generate_prime_candidate(n_size)
     success = True
     for i in range(n_iter):
-        a = random.randrange(1,b)
+        ## Generate a random number in the range 1 to b-1
+        ## Jacobi symbol crashes if a = b!
+        a = random.randrange(1,b-1)
         if gcd(a, b) == 1 and jacobi_symbol(a, b) == a**((b-1)//2) % b:
             continue
         else:
