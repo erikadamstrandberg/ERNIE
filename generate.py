@@ -14,7 +14,7 @@ def generate_prime(n_size,n_iter):
     for i in range(n_iter):
         ## Generate a random number in the range 1 to b-1
         ## Jacobi symbol crashes if a = b!
-        a = random.randrange(1,b-1)
+        a = random.randrange(1,b)
         if gcd(a, b) == 1 and jacobi_symbol(a, b) == a**((b-1)//2) % b:
             continue
         else:
@@ -78,7 +78,7 @@ def generate_d_e(p,q,d_start):
         x_temp = x1
         x1 = x0%x1
         x0 = x_temp
-         
+        
         quotient = r0//r1
 
         r_temp = r1
@@ -99,8 +99,6 @@ def generate_d_e(p,q,d_start):
 
     return (d,e)
     
-# NOTE I am unsure here! Must d be a prime as well?
-# If that is the case please implement jacobi here as well!
 def d_rel_prime(d, p, q):
     if gcd(d, (p-1)*(q-1)) == 1:
         return True
@@ -109,9 +107,8 @@ def d_rel_prime(d, p, q):
 
 # Constructor!
 class RsaKeyPair():
-    def __init__(self,n_size=10,n_iter=10):
+    def __init__(self,n_size=10,n_iter=11):
         self.p = generate_prime(n_size,n_iter)
         self.q = generate_prime(n_size,n_iter)
         (self.d,self.e) = generate_d_e(self.p,self.q,1)
         self.n_size = n_size
-
