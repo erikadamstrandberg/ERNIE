@@ -52,9 +52,9 @@ def decrypt(cipher, decrypt_to):
 
 if __name__== "__main__":
     parser = argparse.ArgumentParser('rsa encrypt')
-    parser.add_argument("--rsa_key", required=False, action='store_true', help="generate new key pair")
-    parser.add_argument("--encrypt", help="encrypt a file")
-    parser.add_argument("--decrypt", help="decrypt a cipher")
+    parser.add_argument("-r","--rsa_key", required=False, action='store_true', help="generate new key pair")
+    parser.add_argument("-e","--encrypt", help="encrypt a file")
+    parser.add_argument("-d","--decrypt", help="decrypt a cipher")
     args = parser.parse_args()
 
     if args.rsa_key:
