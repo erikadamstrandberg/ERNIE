@@ -29,7 +29,7 @@ class test_rsa_key_gen(unittest.TestCase):
         d_test = 441
         e_test = 121
 
-        (d,e) = generate.generate_d_e(p,q,d_start);
+        (d,e) = generate.generate_d_e(p,q,d_start)
         self.assertEqual(d,d_test)
         self.assertEqual(e,e_test)
 

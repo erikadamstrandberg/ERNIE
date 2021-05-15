@@ -1,34 +1,36 @@
 import numpy as np
+import math
 import random
 import sys
+from gmpy2 import jacobi, mpz, gcd, powmod, t_div, digits
 sys.setrecursionlimit(10**6)
 
 # Generates a prime number with the bitsize n_size.
 # Tries to check if the number actually is prime n_iter times.
 # If b is a composite number each check has a probability to
 # find it with 50% for each check, thus the probablity of 
-# b being prime is 2**(n_iter)
-def generate_prime(n_size,n_iter):
-    b = generate_prime_candidate(n_size)
+# b being prime is 1 - 2**(-n_iter)
+def generate_prime(n_size, n_iter):
+    b = mpz(generate_prime_candidate(n_size))
     success = True
     for i in range(n_iter):
         ## Generate a random number in the range 1 to b-1
         ## Jacobi symbol crashes if a = b!
-        a = random.randrange(1,b)
-        if gcd(a, b) == 1 and jacobi_symbol(a, b) == a**((b-1)//2) % b:
+        a = mpz(random.randrange(1,b))
+        if gcd_m(a, b) == 1 and jacobi(a, b) == powmod(a, t_div((b-1), 2), b):
             continue
         else:
             success = False
             break
     if success:
-        return b
+        return int(digits(b)), success
     else:
-        return generate_prime(n_size, n_iter)
+        return 0, success
 
 # Generates a random number with the bitsize n_size
 def generate_prime_candidate(n_size):
     n = random.getrandbits(n_size)
-    while n < 3:
+    while n < 3 or n % 2 == 0:
         n = random.getrandbits(n_size)
     return n 
 
@@ -44,7 +46,7 @@ def jacobi_symbol(a,b):
 
 
 # Find greatest common divisor (GCD) of a and b
-def gcd(a,b):
+def gcd_m(a,b):
     while not a == b:
         if a > b:
             a = a - b
@@ -55,7 +57,7 @@ def gcd(a,b):
 # Generate d as relative prime to (p-1)*(q-1)
 # Then find e from the extended euclidean algorithm
 def generate_d_e(p,q,d_start):
-    d = np.maximum(p,q) + d_start
+    d = max(p,q) + d_start
     d_is_found = False 
 
     # Just iterate until a relativly prime d is found
@@ -94,7 +96,7 @@ def generate_d_e(p,q,d_start):
     # If e < log2(p*q) we choose a new d and 
     # repeat the process! 
     # NOTE More recursion might been stupid?
-    if e < np.log2(p*q):
+    if e < math.log2(p*q):
         (e,d) = generate_d_e(p,q,d)
 
     return (d,e)
@@ -107,8 +109,14 @@ def d_rel_prime(d, p, q):
 
 # Constructor!
 class RsaKeyPair():
-    def __init__(self,n_size=10,n_iter=11):
-        self.p = generate_prime(n_size,n_iter)
-        self.q = generate_prime(n_size,n_iter)
+    def __init__(self,n_size=100,n_iter=11):
+        success = False
+        while not success:
+            self.p, success = generate_prime(n_size,n_iter)
+        print(self.p)
+        success = False
+        while not success:
+            self.q, success = generate_prime(n_size,n_iter)
+        print(self.q)
         (self.d,self.e) = generate_d_e(self.p,self.q,1)
         self.n_size = n_size
