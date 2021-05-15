@@ -113,10 +113,8 @@ class RsaKeyPair():
         success = False
         while not success:
             self.p, success = generate_prime(n_size,n_iter)
-        print(self.p)
         success = False
         while not success:
             self.q, success = generate_prime(n_size,n_iter)
-        print(self.q)
         (self.d,self.e) = generate_d_e(self.p,self.q,1)
         self.n_size = n_size
