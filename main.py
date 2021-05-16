@@ -31,17 +31,21 @@ def encrypt(message, encrypt_to):
             char = m.read(1)
             if not char:
                 break
-            file_e.write(str( pow(ord(char), e, n)) + "\n")
+            char_int = ord(char)
+            encrypted_char = str(pow(char_int, e, n))
+            file_e.write(encrypted_char + "\n")
     file_e.close()
 
-    
 def decrypt(cipher, decrypt_to):
     with open("RSA_KEY/rsa.public", "r") as infile:
         n, d = [int(public_int.strip()) for public_int in infile.readlines()[:2]]
     file_cipher = open(cipher, "r")
     file_decrypt_to = open(decrypt_to, "x")
     for line in file_cipher:
-        file_decrypt_to.write(chr(pow(int(line.strip()), d, n)))
+        line_int = int(line.strip())
+        char_int = pow(line_int, d, n)
+        char = chr(char_int)
+        file_decrypt_to.write(char)
     file_cipher.close()
     file_decrypt_to.close()
 
