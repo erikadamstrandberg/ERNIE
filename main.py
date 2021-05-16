@@ -22,6 +22,9 @@ def crypt(bas, exp, n):
     else:
         return ((bas%n)*t)%n
 
+def encrypt_decrypt_int(message: int, key: int, n: int):
+    return pow(message, key, n)
+
 def encrypt(message, encrypt_to):
     with open("RSA_KEY/rsa.private", "r") as infile:
         n, e = [int(private_int.strip()) for private_int in infile.readlines()[:2]]
@@ -32,7 +35,7 @@ def encrypt(message, encrypt_to):
             if not char:
                 break
             char_int = ord(char)
-            encrypted_char = str(pow(char_int, e, n))
+            encrypted_char = str(encrypt_decrypt_int(char_int, e, n))
             file_e.write(encrypted_char + "\n")
     file_e.close()
 
@@ -43,9 +46,9 @@ def decrypt(cipher, decrypt_to):
     file_decrypt_to = open(decrypt_to, "x")
     for line in file_cipher:
         line_int = int(line.strip())
-        char_int = pow(line_int, d, n)
-        char = chr(char_int)
-        file_decrypt_to.write(char)
+        char_int = encrypt_decrypt_int(line_int, d, n)
+        decrypted_char = chr(char_int)
+        file_decrypt_to.write(decrypted_char)
     file_cipher.close()
     file_decrypt_to.close()
 
