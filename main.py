@@ -2,7 +2,6 @@
 import numpy as numpy
 import argparse
 import os
-
 ## Helper functions
 import generate
 import file_util
@@ -24,31 +23,27 @@ def crypt(bas, exp, n):
         return ((bas%n)*t)%n
 
 def encrypt(message, encrypt_to):
-    file_private_n = open("RSA_KEY/rsa.private", "r")
-    n = int(file_private_n.readlines()[0].strip())
-    file_private_d = open("RSA_KEY/rsa.private", "r") 
-    d = int(file_private_d.readlines()[1].strip())
-
+    with open("RSA_KEY/rsa.private", "r") as infile:
+        n, e = [int(private_int.strip()) for private_int in infile.readlines()[:2]]
     file_e = open(encrypt_to, "x")
     with open(message, "r") as m:
         while True:
             char = m.read(1)
             if not char:
                 break
-            file_e.write(str( crypt(ord(char),d,n)) + "\n")
+            file_e.write(str( pow(ord(char), e, n)) + "\n")
+    file_e.close()
 
     
 def decrypt(cipher, decrypt_to):
-    file_private_n = open("RSA_KEY/rsa.public", "r")
-    n = int(file_private_n.readlines()[0].strip())
-    file_private_e = open("RSA_KEY/rsa.public", "r") 
-    e = int(file_private_e.readlines()[1].strip())
-
+    with open("RSA_KEY/rsa.public", "r") as infile:
+        n, d = [int(public_int.strip()) for public_int in infile.readlines()[:2]]
     file_cipher = open(cipher, "r")
     file_decrypt_to = open(decrypt_to, "x")
     for line in file_cipher:
-        file_decrypt_to.write(chr(crypt(int(line), e, n)))
-    
+        file_decrypt_to.write(chr(pow(int(line.strip()), d, n)))
+    file_cipher.close()
+    file_decrypt_to.close()
 
 if __name__== "__main__":
     parser = argparse.ArgumentParser('rsa encrypt')
